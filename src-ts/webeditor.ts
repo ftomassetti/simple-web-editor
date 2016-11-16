@@ -1,65 +1,95 @@
 /// <reference path="defs/jquery.d.ts" />
 
-var textBeforeCaret = function() {
-    if ((window as any).caret_index == 0) {
-        return "";
-    } else {
-        return (window as any).text.substring(0, (window as any).caret_index);
-    }
-};
+class Editor {
+    caretIndex: number;
+    text: string;
 
-var textAfterCaret = function() {
-    if ((window as any).caret_index == (window as any).text.length) {
-        return "";
-    } else {
-        return (window as any).text.substring((window as any).caret_index);
+    constructor() {
+        this.caretIndex = 0;
+        this.text = "";
     }
-};    
 
-var htmlGen = function() {   
-    if ((window as any).caret_index < 0) {
-        (window as any).caret_index = 0;
+    textBeforeCaret() {
+        if (this.caretIndex == 0) {
+            return "";
+        } else {
+            return this.text.substring(0, this.caretIndex);
+        }
     }
-    if ((window as any).caret_index > (window as any).text.length) {
-        (window as any).caret_index = (window as any).text.length;
+
+    textAfterCaret() {
+        if (this.caretIndex  == this.text.length) {
+            return "";
+        } else {
+            return this.text.substring(this.caretIndex );
+        }
     }
-    $("#editor")[0].innerHTML = textBeforeCaret() 
+
+    generateHtml() {
+        return this.textBeforeCaret() 
                 + "<span class='cursor-placeholder'>|</span>"
-                + textAfterCaret();
+                + this.textAfterCaret();
+    }
+
+    type(c:string) {
+        this.text = this.textBeforeCaret() + c + this.textAfterCaret();
+        this.caretIndex = this.caretIndex + 1;
+    }
+
+    deleteChar() : boolean {
+        if (this.textBeforeCaret().length > 0) {
+            this.text = this.textBeforeCaret().substring(0, this.textBeforeCaret().length - 1) + this.textAfterCaret();
+            this.caretIndex--;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    moveLeft() : boolean {
+        if (this.caretIndex == 0) {
+            return false;
+        } else {
+            this.caretIndex--;
+            return true;
+        }
+    }
+
+    moveRight() : boolean {
+        if (this.caretIndex == this.text.length) {
+            return false;
+        } else {
+            this.caretIndex++;
+            return true;
+        }
+    }    
+}
+
+var updateHtml = function() {   
+    $("#editor")[0].innerHTML = (window as any).editor.generateHtml();
     var cursorPos = $(".cursor-placeholder").position();
     var delta = $(".cursor-placeholder").height() / 4.0;
     $(".blinking-cursor").css({top: cursorPos.top, left: cursorPos.left - delta});        
 };
 
 $( document ).ready(function() {        
-    console.log( "ready!" );
-    (window as any).text = "";
-    (window as any).caret_index = 0;
+    (window as any).editor = new Editor();
 
-    htmlGen();
+    updateHtml();
     $(document).keypress(function(e){
-        // type
-        //console.log("EVENT " + JSON.stringify(e));   
         var c = String.fromCharCode(e.which);   
-        (window as any).text = textBeforeCaret() + c + textAfterCaret();
-        (window as any).caret_index = (window as any).caret_index + 1;
-        htmlGen();
+        (window as any).editor.type(c);        
+        updateHtml();
     });
     $(document).keydown(function(e){
-        if (e.which == 8 && textBeforeCaret().length > 0) {
-            (window as any).text = textBeforeCaret().substring(0, textBeforeCaret().length - 1) + textAfterCaret();
-            (window as any).caret_index = (window as any).caret_index - 1;
-            htmlGen();
+        if (e.which == 8 && (window as any).editor.deleteChar()) {            
+            updateHtml();
         };
-        if (e.which == 37) {
-            // arrow left
-            (window as any).caret_index = (window as any).caret_index - 1;
-            htmlGen();
+        if (e.which == 37 && (window as any).editor.moveLeft()) {
+            updateHtml();
         };
-        if (e.which == 39) {
-            // arrow right
-            (window as any).caret_index = (window as any).caret_index + 1;
-            htmlGen();
+        if (e.which == 39 && (window as any).editor.moveRight()) {
+            updateHtml();
         };
     });
 });      

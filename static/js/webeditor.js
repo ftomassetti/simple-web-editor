@@ -1,64 +1,89 @@
 /// <reference path="defs/jquery.d.ts" />
-var textBeforeCaret = function () {
-    if (window.caret_index == 0) {
-        return "";
+var Editor = (function () {
+    function Editor() {
+        this.caretIndex = 0;
+        this.text = "";
     }
-    else {
-        return window.text.substring(0, window.caret_index);
-    }
-};
-var textAfterCaret = function () {
-    if (window.caret_index == window.text.length) {
-        return "";
-    }
-    else {
-        return window.text.substring(window.caret_index);
-    }
-};
-var htmlGen = function () {
-    if (window.caret_index < 0) {
-        window.caret_index = 0;
-    }
-    if (window.caret_index > window.text.length) {
-        window.caret_index = window.text.length;
-    }
-    $("#editor")[0].innerHTML = textBeforeCaret()
-        + "<span class='cursor-placeholder'>|</span>"
-        + textAfterCaret();
+    Editor.prototype.textBeforeCaret = function () {
+        if (this.caretIndex == 0) {
+            return "";
+        }
+        else {
+            return this.text.substring(0, this.caretIndex);
+        }
+    };
+    Editor.prototype.textAfterCaret = function () {
+        if (this.caretIndex == this.text.length) {
+            return "";
+        }
+        else {
+            return this.text.substring(this.caretIndex);
+        }
+    };
+    Editor.prototype.generateHtml = function () {
+        return this.textBeforeCaret()
+            + "<span class='cursor-placeholder'>|</span>"
+            + this.textAfterCaret();
+    };
+    Editor.prototype.type = function (c) {
+        this.text = this.textBeforeCaret() + c + this.textAfterCaret();
+        this.caretIndex = this.caretIndex + 1;
+    };
+    Editor.prototype.deleteChar = function () {
+        if (this.textBeforeCaret().length > 0) {
+            this.text = this.textBeforeCaret().substring(0, this.textBeforeCaret().length - 1) + this.textAfterCaret();
+            this.caretIndex--;
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+    Editor.prototype.moveLeft = function () {
+        if (this.caretIndex == 0) {
+            return false;
+        }
+        else {
+            this.caretIndex--;
+            return true;
+        }
+    };
+    Editor.prototype.moveRight = function () {
+        if (this.caretIndex == this.text.length) {
+            return false;
+        }
+        else {
+            this.caretIndex++;
+            return true;
+        }
+    };
+    return Editor;
+}());
+var updateHtml = function () {
+    $("#editor")[0].innerHTML = window.editor.generateHtml();
     var cursorPos = $(".cursor-placeholder").position();
     var delta = $(".cursor-placeholder").height() / 4.0;
     $(".blinking-cursor").css({ top: cursorPos.top, left: cursorPos.left - delta });
 };
 $(document).ready(function () {
-    console.log("ready!");
-    window.text = "";
-    window.caret_index = 0;
-    htmlGen();
+    window.editor = new Editor();
+    updateHtml();
     $(document).keypress(function (e) {
-        // type
-        //console.log("EVENT " + JSON.stringify(e));   
         var c = String.fromCharCode(e.which);
-        window.text = textBeforeCaret() + c + textAfterCaret();
-        window.caret_index = window.caret_index + 1;
-        htmlGen();
+        window.editor.type(c);
+        updateHtml();
     });
     $(document).keydown(function (e) {
-        if (e.which == 8 && textBeforeCaret().length > 0) {
-            window.text = textBeforeCaret().substring(0, textBeforeCaret().length - 1) + textAfterCaret();
-            window.caret_index = window.caret_index - 1;
-            htmlGen();
+        if (e.which == 8 && window.editor.deleteChar()) {
+            updateHtml();
         }
         ;
-        if (e.which == 37) {
-            // arrow left
-            window.caret_index = window.caret_index - 1;
-            htmlGen();
+        if (e.which == 37 && window.editor.moveLeft()) {
+            updateHtml();
         }
         ;
-        if (e.which == 39) {
-            // arrow right
-            window.caret_index = window.caret_index + 1;
-            htmlGen();
+        if (e.which == 39 && window.editor.moveRight()) {
+            updateHtml();
         }
         ;
     });
