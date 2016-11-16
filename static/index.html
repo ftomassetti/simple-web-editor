@@ -13,6 +13,22 @@
     window.text = "";
     window.caret_index = 0;
 
+    var textBeforeCaret = function() {
+        if (window.caret_index == 0) {
+            return "";
+        } else {
+            return window.text.substring(0, caret_index);
+        }
+    };
+
+    var textAfterCaret = function() {
+        if (window.caret_index == window.text.length) {
+            return "";
+        } else {
+            return window.text.substring(caret_index);
+        }
+    };    
+
     var htmlGen = function() {   
         if (window.caret_index < 0) {
             window.caret_index = 0;
@@ -20,18 +36,12 @@
         if (window.caret_index > window.text.length) {
             window.caret_index = window.text.length;
         }
-        console.log("CARET INDEX " + caret_index);
-        if (window.caret_index == 0) {
-            $("#editor")[0].innerHTML = "<span class='cursor-placeholder'>|</span>" + window.text;
-        } else if (window.caret_index == window.text.length) {
-            $("#editor")[0].innerHTML = window.text + "<span class='cursor-placeholder'>|</span>";
-        } else {
-            $("#editor")[0].innerHTML = window.text.substring(0, caret_index) 
+        $("#editor")[0].innerHTML = textBeforeCaret() 
                     + "<span class='cursor-placeholder'>|</span>"
-                    + window.text.substring(caret_index);
-        }        
+                    + textAfterCaret();
         var cursorPos = $(".cursor-placeholder").position();
-        $(".blinking-cursor").css({top: cursorPos.top, left: cursorPos.left - 10});        
+        var delta = $(".cursor-placeholder").height() / 4.0;
+        $(".blinking-cursor").css({top: cursorPos.top, left: cursorPos.left - delta});        
     };
 
     $( document ).ready(function() {
@@ -41,13 +51,13 @@
             // type
             //console.log("EVENT " + JSON.stringify(e));   
             var c = String.fromCharCode(e.which);   
-            window.text = window.text + c;
+            window.text = textBeforeCaret() + c + textAfterCaret();
             window.caret_index = window.caret_index + 1;
             htmlGen();
         });
         $(document).keydown(function(e){
-            if (e.which == 8) {
-                window.text = window.text.substring(0, window.text.length - 1);
+            if (e.which == 8 && textBeforeCaret().length > 0) {
+                window.text = textBeforeCaret().substring(0, textBeforeCaret().length - 1) + textAfterCaret();
                 window.caret_index = window.caret_index - 1;
                 htmlGen();
             };
