@@ -2,27 +2,65 @@
 <head>
     <link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
     <script src="js/jquery-3.1.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
 </head>
 <body>
-    <div id="editor">
+    <h1>My Simple Web Editor</h1>
+    <div id="editor">        
     </div>
+    <span class="blinking-cursor">|</span>
     <script>
     window.text = "";
+    window.caret_index = 0;
+
+    var htmlGen = function() {   
+        if (window.caret_index < 0) {
+            window.caret_index = 0;
+        }
+        if (window.caret_index > window.text.length) {
+            window.caret_index = window.text.length;
+        }
+        console.log("CARET INDEX " + caret_index);
+        if (window.caret_index == 0) {
+            $("#editor")[0].innerHTML = "<span class='cursor-placeholder'>|</span>" + window.text;
+        } else if (window.caret_index == window.text.length) {
+            $("#editor")[0].innerHTML = window.text + "<span class='cursor-placeholder'>|</span>";
+        } else {
+            $("#editor")[0].innerHTML = window.text.substring(0, caret_index) 
+                    + "<span class='cursor-placeholder'>|</span>"
+                    + window.text.substring(caret_index);
+        }        
+        var cursorPos = $(".cursor-placeholder").position();
+        $(".blinking-cursor").css({top: cursorPos.top, left: cursorPos.left - 10});        
+    };
+
     $( document ).ready(function() {
         console.log( "ready!" );
+        htmlGen();
         $(document).keypress(function(e){
             // type
             //console.log("EVENT " + JSON.stringify(e));   
             var c = String.fromCharCode(e.which);   
             window.text = window.text + c;
-            $("#editor")[0].innerHTML = window.text + "<span class='blinking-cursor'>|</span>";
+            window.caret_index = window.caret_index + 1;
+            htmlGen();
         });
         $(document).keydown(function(e){
             if (e.which == 8) {
                 window.text = window.text.substring(0, window.text.length - 1);
-                $("#editor")[0].innerHTML = window.text + "<span class='blinking-cursor'>|</span>";
+                window.caret_index = window.caret_index - 1;
+                htmlGen();
             };
-            
+            if (e.which == 37) {
+                // arrow left
+                window.caret_index = window.caret_index - 1;
+                htmlGen();
+            };
+            if (e.which == 39) {
+                // arrow right
+                window.caret_index = window.caret_index + 1;
+                htmlGen();
+            };
         });
     });
     </script>
