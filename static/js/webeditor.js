@@ -20,13 +20,18 @@ var Editor = (function () {
             return this.text.substring(this.caretIndex);
         }
     };
+    Editor.prototype.toHtml = function (text) {
+        return text.replace("\n", "<br/>");
+    };
     Editor.prototype.generateHtml = function () {
-        return this.textBeforeCaret()
+        return this.toHtml(this.textBeforeCaret())
             + "<span class='cursor-placeholder'>|</span>"
-            + this.textAfterCaret();
+            + this.toHtml(this.textAfterCaret());
     };
     Editor.prototype.type = function (c) {
+        console.log("ADDING " + c);
         this.text = this.textBeforeCaret() + c + this.textAfterCaret();
+        console.log("TEXT '" + this.text + "'");
         this.caretIndex = this.caretIndex + 1;
     };
     Editor.prototype.deleteChar = function () {
@@ -60,7 +65,7 @@ var Editor = (function () {
     return Editor;
 }());
 var updateHtml = function () {
-    $("#editor")[0].innerHTML = window.editor.generateHtml();
+    $("#content")[0].innerHTML = window.editor.generateHtml();
     var cursorPos = $(".cursor-placeholder").position();
     var delta = $(".cursor-placeholder").height() / 4.0;
     $(".blinking-cursor").css({ top: cursorPos.top, left: cursorPos.left - delta });
@@ -70,6 +75,9 @@ $(document).ready(function () {
     updateHtml();
     $(document).keypress(function (e) {
         var c = String.fromCharCode(e.which);
+        if (e.which == 13) {
+            c = "\n";
+        }
         window.editor.type(c);
         updateHtml();
     });

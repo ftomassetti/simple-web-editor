@@ -9,8 +9,24 @@ html {
 #editor {    
     height: 200px;
     background-color: #44443e;
-    border: 1px #737373 solid;
-    padding: 10px;
+    border: 1px #737373 solid;    
+}
+
+#lines {
+  padding-top: 10px;
+  padding-left: 3px;
+  padding-right: 3px;
+  text-align: right;
+  width: 20px;
+  background-color: #33332e;
+  border-right: 1px #737373 solid;
+  float: left;
+}
+
+#content {
+  height: 100%;
+  padding: 10px;
+  float: left;
 }
 
 .cursor-placeholder {

@@ -25,14 +25,20 @@ class Editor {
         }
     }
 
+    private toHtml(text) {
+        return text.replace("\n", "<br/>");
+    }
+
     generateHtml() {
-        return this.textBeforeCaret() 
+        return this.toHtml(this.textBeforeCaret())
                 + "<span class='cursor-placeholder'>|</span>"
-                + this.textAfterCaret();
+                + this.toHtml(this.textAfterCaret());
     }
 
     type(c:string) {
+        console.log("ADDING " + c);
         this.text = this.textBeforeCaret() + c + this.textAfterCaret();
+        console.log("TEXT '" + this.text+"'");
         this.caretIndex = this.caretIndex + 1;
     }
 
@@ -66,7 +72,7 @@ class Editor {
 }
 
 var updateHtml = function() {   
-    $("#editor")[0].innerHTML = (window as any).editor.generateHtml();
+    $("#content")[0].innerHTML = (window as any).editor.generateHtml();
     var cursorPos = $(".cursor-placeholder").position();
     var delta = $(".cursor-placeholder").height() / 4.0;
     $(".blinking-cursor").css({top: cursorPos.top, left: cursorPos.left - delta});        
@@ -77,7 +83,10 @@ $( document ).ready(function() {
 
     updateHtml();
     $(document).keypress(function(e){
-        var c = String.fromCharCode(e.which);   
+        var c = String.fromCharCode(e.which);        
+        if (e.which == 13) {
+            c = "\n";
+        }
         (window as any).editor.type(c);        
         updateHtml();
     });
