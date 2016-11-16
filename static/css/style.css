@@ -13,11 +13,12 @@ html {
 }
 
 #lines {
-  padding-top: 10px;
+  padding-top: 0px;
   padding-left: 3px;
   padding-right: 3px;
   text-align: right;
   width: 20px;
+  height:100%;
   background-color: #33332e;
   border-right: 1px #737373 solid;
   float: left;
@@ -26,6 +27,7 @@ html {
 #content {
   height: 100%;
   padding: 10px;
+  padding-top: 0px;
   float: left;
 }
 
