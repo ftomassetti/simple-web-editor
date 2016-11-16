@@ -1,0 +1,31 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+    <script src="js/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+    <div id="editor">
+    </div>
+    <script>
+    window.text = "";
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        $(document).keypress(function(e){
+            // type
+            //console.log("EVENT " + JSON.stringify(e));   
+            var c = String.fromCharCode(e.which);   
+            window.text = window.text + c;
+            $("#editor")[0].innerHTML = window.text + "<span class='blinking-cursor'>|</span>";
+        });
+        $(document).keydown(function(e){
+            if (e.which == 8) {
+                window.text = window.text.substring(0, window.text.length - 1);
+                $("#editor")[0].innerHTML = window.text + "<span class='blinking-cursor'>|</span>";
+            };
+            
+        });
+    });
+    </script>
+<body>    
+</html>
+
