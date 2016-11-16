@@ -1,8 +1,8 @@
 /// <reference path="defs/jquery.d.ts" />
 
 class Editor {
-    caretIndex: number;
-    text: string;
+    private caretIndex: number;
+    private text: string;
 
     constructor() {
         this.caretIndex = 0;
