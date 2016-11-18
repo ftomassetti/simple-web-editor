@@ -105,7 +105,7 @@ var updateHtml = function() {
 };
 
 $( document ).ready(function() {        
-    (window as any).editor = new Editor();
+    let editor = (window as any).editor = new Editor();
 
     updateHtml();
     $(document).keypress(function(e){
@@ -113,17 +113,17 @@ $( document ).ready(function() {
         if (e.which == 13) {
             c = "\n";
         }
-        (window as any).editor.type(c);        
+        editor.type(c);
         updateHtml();
     });
     $(document).keydown(function(e){
-        if (e.which == 8 && (window as any).editor.deleteChar()) {            
+        if (e.which == 8 && editor.deleteChar()) {
             updateHtml();
         };
-        if (e.which == 37 && (window as any).editor.moveLeft()) {
+        if (e.which == 37 && editor.moveLeft()) {
             updateHtml();
         };
-        if (e.which == 39 && (window as any).editor.moveRight()) {
+        if (e.which == 39 && editor.moveRight()) {
             updateHtml();
         };
     });
