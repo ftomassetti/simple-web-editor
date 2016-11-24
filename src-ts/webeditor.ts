@@ -1,13 +1,13 @@
 /// <reference path="defs/jquery.d.ts" />
 
-class Editor {
+export class Editor {
     private caretIndex: number;
     private nLines: number;
     private text: string;
 
-    constructor() {
+    constructor(initialText = "") {
         this.caretIndex = 0;
-        this.text = "";
+        this.text = initialText;
         this.nLines = 1;
     }
 
@@ -27,6 +27,39 @@ class Editor {
         }
     }
 
+    currentLine() : number {
+        return (this.textBeforeCaret().match(/\n/g) || []).length
+    }
+
+    numberOfLines() : number  {
+        return this.nLines
+    }
+
+    private currentColumn() : number  {
+        var i = this.textBeforeCaret().lastIndexOf("\n")
+        return this.caretIndex - i
+    }
+
+    private numberOfColumnsForLine(line: number) : number  {
+        var lines = (this.text.match(/\n/g) || [])
+        return lines[line].length
+    }
+
+    private goTo(line: number, column: number) {
+        var newIndex = 0
+        if (line >= this.numberOfLines()) {
+            line = this.numberOfLines() - 1
+        }
+        if (column >= this.numberOfColumnsForLine(line)) {
+            column = this.numberOfColumnsForLine(line) - 1
+        }
+        for (var i=0;i<line;i++) {
+            newIndex = this.text.indexOf("\n", newIndex);
+        }
+        newIndex += column
+        this.caretIndex = newIndex
+    }
+
     private toHtml(text) {
         return text.replace(/\n/g, "<br/>");
     }
@@ -44,8 +77,8 @@ class Editor {
 
     generateContentHtml() {
         return this.toHtml(this.textBeforeCaret())
-                + "<span class='cursor-placeholder'>|</span>"
-                + this.toHtml(this.textAfterCaret());
+            + "<span class='cursor-placeholder'>|</span>"
+            + this.toHtml(this.textAfterCaret());
     }
 
     generateLinesHtml() {
@@ -105,41 +138,24 @@ class Editor {
             this.caretIndex++;
             return true;
         }
-    }    
+    }
+
+    moveUp() : boolean {
+        if (this.currentLine() == 0) {
+            return false;
+        } else {
+            this.goTo(this.currentLine() - 1, this.currentColumn())
+            return true;
+        }
+    }
+
+    moveDown() : boolean {
+        if (this.currentLine() == (this.numberOfLines() - 1)) {
+            return false;
+        } else {
+            this.goTo(this.currentLine() + 1, this.currentColumn())
+            return true;
+        }
+    }
 }
 
-var updateHtml = function() {   
-    $("#content")[0].innerHTML = (window as any).editor.generateContentHtml();
-    $("#lines")[0].innerHTML = (window as any).editor.generateLinesHtml();
-    var cursorPos = $(".cursor-placeholder").position();
-    var delta = $(".cursor-placeholder").height() / 4.0;
-    $(".blinking-cursor").css({top: cursorPos.top, left: cursorPos.left - delta});        
-};
-
-$( document ).ready(function() {        
-    let editor = (window as any).editor = new Editor();
-
-    updateHtml();
-    $(document).keypress(function(e){
-        var c = String.fromCharCode(e.which);        
-        if (e.which == 13) {
-            c = "\n";
-        }
-        editor.type(c);
-        updateHtml();
-    });
-    $(document).keydown(function(e){
-        if (e.which == 46 && editor.deleteNextChar()) {
-            updateHtml();
-        };
-        if (e.which == 8 && editor.deletePrevChar()) {
-            updateHtml();
-        };
-        if (e.which == 37 && editor.moveLeft()) {
-            updateHtml();
-        };
-        if (e.which == 39 && editor.moveRight()) {
-            updateHtml();
-        };
-    });
-});

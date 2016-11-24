@@ -1,5 +1,4 @@
 /// <reference path="defs/qunit.d.ts" />
-
 /*import {Editor} from "./webeditor";
 
 QUnit.test( "default editor", function( assert ) {

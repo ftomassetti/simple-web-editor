@@ -1,8 +1,10 @@
 /// <reference path="defs/jquery.d.ts" />
+"use strict";
 var Editor = (function () {
-    function Editor() {
+    function Editor(initialText) {
+        if (initialText === void 0) { initialText = ""; }
         this.caretIndex = 0;
-        this.text = "";
+        this.text = initialText;
         this.nLines = 1;
     }
     Editor.prototype.textBeforeCaret = function () {
@@ -20,6 +22,34 @@ var Editor = (function () {
         else {
             return this.text.substring(this.caretIndex);
         }
+    };
+    Editor.prototype.currentLine = function () {
+        return (this.textBeforeCaret().match(/\n/g) || []).length;
+    };
+    Editor.prototype.numberOfLines = function () {
+        return this.nLines;
+    };
+    Editor.prototype.currentColumn = function () {
+        var i = this.textBeforeCaret().lastIndexOf("\n");
+        return this.caretIndex - i;
+    };
+    Editor.prototype.numberOfColumnsForLine = function (line) {
+        var lines = (this.text.match(/\n/g) || []);
+        return lines[line].length;
+    };
+    Editor.prototype.goTo = function (line, column) {
+        var newIndex = 0;
+        if (line >= this.numberOfLines()) {
+            line = this.numberOfLines() - 1;
+        }
+        if (column >= this.numberOfColumnsForLine(line)) {
+            column = this.numberOfColumnsForLine(line) - 1;
+        }
+        for (var i = 0; i < line; i++) {
+            newIndex = this.text.indexOf("\n", newIndex);
+        }
+        newIndex += column;
+        this.caretIndex = newIndex;
     };
     Editor.prototype.toHtml = function (text) {
         return text.replace(/\n/g, "<br/>");
@@ -95,43 +125,24 @@ var Editor = (function () {
             return true;
         }
     };
+    Editor.prototype.moveUp = function () {
+        if (this.currentLine() == 0) {
+            return false;
+        }
+        else {
+            this.goTo(this.currentLine() - 1, this.currentColumn());
+            return true;
+        }
+    };
+    Editor.prototype.moveDown = function () {
+        if (this.currentLine() == (this.numberOfLines() - 1)) {
+            return false;
+        }
+        else {
+            this.goTo(this.currentLine() + 1, this.currentColumn());
+            return true;
+        }
+    };
     return Editor;
 }());
-var updateHtml = function () {
-    $("#content")[0].innerHTML = window.editor.generateContentHtml();
-    $("#lines")[0].innerHTML = window.editor.generateLinesHtml();
-    var cursorPos = $(".cursor-placeholder").position();
-    var delta = $(".cursor-placeholder").height() / 4.0;
-    $(".blinking-cursor").css({ top: cursorPos.top, left: cursorPos.left - delta });
-};
-$(document).ready(function () {
-    var editor = window.editor = new Editor();
-    updateHtml();
-    $(document).keypress(function (e) {
-        var c = String.fromCharCode(e.which);
-        if (e.which == 13) {
-            c = "\n";
-        }
-        editor.type(c);
-        updateHtml();
-    });
-    $(document).keydown(function (e) {
-        if (e.which == 46 && editor.deleteNextChar()) {
-            updateHtml();
-        }
-        ;
-        if (e.which == 8 && editor.deletePrevChar()) {
-            updateHtml();
-        }
-        ;
-        if (e.which == 37 && editor.moveLeft()) {
-            updateHtml();
-        }
-        ;
-        if (e.which == 39 && editor.moveRight()) {
-            updateHtml();
-        }
-        ;
-    });
-});
-//# sourceMappingURL=webeditor.js.map
+exports.Editor = Editor;

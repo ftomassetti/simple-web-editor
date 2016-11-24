@@ -1,6 +1,9 @@
-requirejs(['./js/webeditor'], function (webeditor) {
-    console.log("WEBEDITOR LOADED")
-
+var res = requirejs(['webeditor'], function (WebEditor) {
+    //import {Editor} from "webeditor"
+    var we = require('webeditor')
+    //console.log("WEBEDITOR LOADED "+Editor)
+    console.log(JSON.stringify(WebEditor))
+/*
     var updateHtml = function () {
         $("#content")[0].innerHTML = window.editor.generateContentHtml();
         $("#lines")[0].innerHTML = window.editor.generateLinesHtml();
@@ -46,5 +49,5 @@ requirejs(['./js/webeditor'], function (webeditor) {
             }
             ;
         });
-    });
+    });*/
 });

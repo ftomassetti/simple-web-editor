@@ -147,6 +147,5 @@ define("webeditor", ["require", "exports"], function (require, exports) {
         return Editor;
     }());
     exports.Editor = Editor;
-    console.log("HI");
-
+    return Editor;
 });
