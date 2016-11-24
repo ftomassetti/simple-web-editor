@@ -64,13 +64,25 @@ class Editor {
         this.caretIndex = this.caretIndex + 1;
     }
 
-    deleteChar() : boolean {
+    deletePrevChar() : boolean {
         if (this.textBeforeCaret().length > 0) {
             if (this.text[this.caretIndex - 1] == '\n') {
                 this.removeLine();
             }
             this.text = this.textBeforeCaret().substring(0, this.textBeforeCaret().length - 1) + this.textAfterCaret();
             this.caretIndex--;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    deleteNextChar() : boolean {
+        if (this.textAfterCaret().length > 0) {
+            if (this.text[this.caretIndex + 1] == '\n') {
+                this.removeLine();
+            }
+            this.text = this.textBeforeCaret() + this.textAfterCaret().substr(1);
             return true;
         } else {
             return false;
@@ -117,7 +129,10 @@ $( document ).ready(function() {
         updateHtml();
     });
     $(document).keydown(function(e){
-        if (e.which == 8 && editor.deleteChar()) {
+        if (e.which == 46 && editor.deleteNextChar()) {
+            updateHtml();
+        };
+        if (e.which == 8 && editor.deletePrevChar()) {
             updateHtml();
         };
         if (e.which == 37 && editor.moveLeft()) {
