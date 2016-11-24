@@ -1,2 +1,3 @@
-tsc src-ts/webeditor.ts --module commonjs
-tsc src-ts/tests.ts --module commonjs
+tsc static/js/webeditor.ts --module amd
+tsc static/js/tests.ts --module amd
+tsc static/js/main.ts --module amd

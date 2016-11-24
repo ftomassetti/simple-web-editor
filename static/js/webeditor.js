@@ -1,5 +1,5 @@
 /// <reference path="defs/jquery.d.ts" />
-define("webeditor", ["require", "exports"], function (require, exports) {
+define(["require", "exports"], function (require, exports) {
     "use strict";
     var Editor = (function () {
         function Editor(initialText) {
@@ -147,5 +147,5 @@ define("webeditor", ["require", "exports"], function (require, exports) {
         return Editor;
     }());
     exports.Editor = Editor;
-    return Editor;
 });
+//# sourceMappingURL=webeditor.js.map

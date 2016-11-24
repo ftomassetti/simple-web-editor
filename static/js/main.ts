@@ -1,18 +1,21 @@
-var res = requirejs(['webeditor'], function (WebEditor) {
-    //import {Editor} from "webeditor"
-    var we = require('webeditor')
-    //console.log("WEBEDITOR LOADED "+Editor)
-    console.log(JSON.stringify(WebEditor))
-/*
+/// <reference path="defs/require.d.ts" />
+/// <reference path="./webeditor.ts" />
+require.config({
+    baseUrl: "/js",
+});
+
+requirejs(['webeditor'], function (WebEditor) {
+
     var updateHtml = function () {
-        $("#content")[0].innerHTML = window.editor.generateContentHtml();
-        $("#lines")[0].innerHTML = window.editor.generateLinesHtml();
+        $("#content")[0].innerHTML = (window as any).editor.generateContentHtml();
+        $("#lines")[0].innerHTML = (window as any).editor.generateLinesHtml();
         var cursorPos = $(".cursor-placeholder").position();
         var delta = $(".cursor-placeholder").height() / 4.0;
         $(".blinking-cursor").css({ top: cursorPos.top, left: cursorPos.left - delta });
     };
+
     $(document).ready(function () {
-        var editor = window.editor = new Editor();
+        var editor = (window as any).editor = new WebEditor.Editor();
         updateHtml();
         $(document).keypress(function (e) {
             var c = String.fromCharCode(e.which);
@@ -49,5 +52,5 @@ var res = requirejs(['webeditor'], function (WebEditor) {
             }
             ;
         });
-    });*/
+    });
 });
