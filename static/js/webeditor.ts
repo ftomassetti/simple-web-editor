@@ -5,10 +5,13 @@ export class Editor {
     private nLines: number;
     private text: string;
 
-    constructor(initialText = "") {
-        this.caretIndex = 0;
+    constructor(initialText = "", initialIndex = 0) {
+        if (initialIndex > initialText.length) {
+            throw new Error("Invalid initial index")
+        }
+        this.caretIndex = initialIndex;
         this.text = initialText;
-        this.nLines = 1;
+        this.nLines = (this.text.match(/\n/g) || []).length + 1;
     }
 
     textBeforeCaret() {

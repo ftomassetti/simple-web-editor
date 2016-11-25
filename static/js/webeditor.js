@@ -2,11 +2,15 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     var Editor = (function () {
-        function Editor(initialText) {
+        function Editor(initialText, initialIndex) {
             if (initialText === void 0) { initialText = ""; }
-            this.caretIndex = 0;
+            if (initialIndex === void 0) { initialIndex = 0; }
+            if (initialIndex > initialText.length) {
+                throw new Error("Invalid initial index");
+            }
+            this.caretIndex = initialIndex;
             this.text = initialText;
-            this.nLines = 1;
+            this.nLines = (this.text.match(/\n/g) || []).length + 1;
         }
         Editor.prototype.textBeforeCaret = function () {
             if (this.caretIndex == 0) {

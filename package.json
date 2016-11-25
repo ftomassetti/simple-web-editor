@@ -1,0 +1,27 @@
+{
+  "name": "web-editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "typings install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ftomassetti/simple-web-editor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ftomassetti/simple-web-editor/issues"
+  },
+  "homepage": "https://github.com/ftomassetti/simple-web-editor#readme",
+  "devDependencies": {
+    "ts-loader": "^1.2.2",
+    "typescript": "^2.2.0-dev.20161125",
+    "typings": "^2.0.0",
+    "webpack": "^1.13.3"
+  }
+}
