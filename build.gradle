@@ -28,4 +28,12 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
   compile "com.sparkjava:spark-core:2.5.3"
+  runtime 'org.antlr:antlr4:4.5.2'
+}
+
+task generateParser(type:JavaExec) {
+    main = 'org.antlr.v4.Tool'
+    classpath = sourceSets.main.runtimeClasspath
+    workingDir = 'src/main/antlr/'
+    args = ['-Dlanguage=JavaScript', 'JsonLexer.g4', '-o', '../../../static/js']
 }

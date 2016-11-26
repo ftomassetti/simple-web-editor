@@ -23,5 +23,8 @@
     "typescript": "^2.2.0-dev.20161125",
     "typings": "^2.0.0",
     "webpack": "^1.13.3"
+  },
+  "dependencies": {
+    "jquery": "^3.1.1"
   }
 }

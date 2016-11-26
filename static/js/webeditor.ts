@@ -42,7 +42,7 @@ export class Editor {
         return this.nLines
     }
 
-    private currentColumn() : number  {
+    currentColumn() : number  {
         var i = this.textBeforeCaret().lastIndexOf("\n")
         if (i == -1) {
             return this.caretIndex;
@@ -50,7 +50,7 @@ export class Editor {
         return this.caretIndex - i - 1
     }
 
-    private numberOfColumnsForLine(line: number) : number  {
+    numberOfColumnsForLine(line: number) : number  {
         var lines = (this.text.match(/[^\r\n]+/g) || [])
         return lines[line].length
     }

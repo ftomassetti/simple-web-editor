@@ -1,7 +1,7 @@
-/// <reference path="defs/require.d.ts" />
-/// <reference path="defs/qunit.d.ts" />
-/// <reference path="./webeditor.ts" />
-import {Editor} from "./webeditor";
+/// <reference path="../defs/require.d.ts" />
+/// <reference path="../defs/qunit.d.ts" />
+/// <reference path="../webeditor.ts" />
+import {Editor} from "../webeditor";
 
 QUnit.test("default editor", function (assert) {
     var editor = new Editor();
