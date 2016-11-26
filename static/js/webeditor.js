@@ -53,8 +53,8 @@ define(["require", "exports"], function (require, exports) {
             if (line >= this.numberOfLines()) {
                 line = this.numberOfLines() - 1;
             }
-            if (column >= this.numberOfColumnsForLine(line)) {
-                column = this.numberOfColumnsForLine(line) - 1;
+            if (column > this.numberOfColumnsForLine(line)) {
+                column = this.numberOfColumnsForLine(line);
             }
             for (var i = 0; i < line; i++) {
                 newIndex = this.text.indexOf("\n", newIndex) + 1;
@@ -153,6 +153,12 @@ define(["require", "exports"], function (require, exports) {
                 this.goTo(this.currentLine() + 1, this.currentColumn());
                 return true;
             }
+        };
+        Editor.prototype.goToStartOfLine = function () {
+            this.goTo(this.currentLine(), 0);
+        };
+        Editor.prototype.goToEndOfLine = function () {
+            this.goTo(this.currentLine(), this.numberOfColumnsForLine(this.currentLine()));
         };
         return Editor;
     }());

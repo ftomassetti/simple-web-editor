@@ -60,8 +60,8 @@ export class Editor {
         if (line >= this.numberOfLines()) {
             line = this.numberOfLines() - 1
         }
-        if (column >= this.numberOfColumnsForLine(line)) {
-            column = this.numberOfColumnsForLine(line) - 1
+        if (column > this.numberOfColumnsForLine(line)) {
+            column = this.numberOfColumnsForLine(line)
         }
         for (var i=0;i<line;i++) {
             newIndex = this.text.indexOf("\n", newIndex) + 1;
@@ -166,6 +166,14 @@ export class Editor {
             this.goTo(this.currentLine() + 1, this.currentColumn())
             return true;
         }
+    }
+
+    goToStartOfLine() {
+        this.goTo(this.currentLine(), 0)
+    }
+
+    goToEndOfLine() {
+        this.goTo(this.currentLine(), this.numberOfColumnsForLine(this.currentLine()))
     }
 }
 

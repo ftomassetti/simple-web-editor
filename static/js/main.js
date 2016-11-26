@@ -47,7 +47,14 @@ requirejs(['webeditor'], function (WebEditor) {
             if (e.which == 40 && editor.moveDown()) {
                 updateHtml();
             }
-            ;
+            if (e.which == 36) {
+                editor.goToStartOfLine();
+                updateHtml();
+            }
+            if (e.which == 35) {
+                editor.goToEndOfLine();
+                updateHtml();
+            }
         });
     });
 });
