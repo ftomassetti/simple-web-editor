@@ -31,15 +31,21 @@ define(["require", "exports"], function (require, exports) {
         Editor.prototype.currentLine = function () {
             return (this.textBeforeCaret().match(/\n/g) || []).length;
         };
+        Editor.prototype.currentIndex = function () {
+            return this.caretIndex;
+        };
         Editor.prototype.numberOfLines = function () {
             return this.nLines;
         };
         Editor.prototype.currentColumn = function () {
             var i = this.textBeforeCaret().lastIndexOf("\n");
-            return this.caretIndex - i;
+            if (i == -1) {
+                return this.caretIndex;
+            }
+            return this.caretIndex - i - 1;
         };
         Editor.prototype.numberOfColumnsForLine = function (line) {
-            var lines = (this.text.match(/\n/g) || []);
+            var lines = (this.text.match(/[^\r\n]+/g) || []);
             return lines[line].length;
         };
         Editor.prototype.goTo = function (line, column) {
@@ -51,7 +57,7 @@ define(["require", "exports"], function (require, exports) {
                 column = this.numberOfColumnsForLine(line) - 1;
             }
             for (var i = 0; i < line; i++) {
-                newIndex = this.text.indexOf("\n", newIndex);
+                newIndex = this.text.indexOf("\n", newIndex) + 1;
             }
             newIndex += column;
             this.caretIndex = newIndex;

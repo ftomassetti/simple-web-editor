@@ -34,17 +34,24 @@ export class Editor {
         return (this.textBeforeCaret().match(/\n/g) || []).length
     }
 
+    currentIndex() : number {
+        return this.caretIndex;
+    }
+
     numberOfLines() : number  {
         return this.nLines
     }
 
     private currentColumn() : number  {
         var i = this.textBeforeCaret().lastIndexOf("\n")
-        return this.caretIndex - i
+        if (i == -1) {
+            return this.caretIndex;
+        }
+        return this.caretIndex - i - 1
     }
 
     private numberOfColumnsForLine(line: number) : number  {
-        var lines = (this.text.match(/\n/g) || [])
+        var lines = (this.text.match(/[^\r\n]+/g) || [])
         return lines[line].length
     }
 
@@ -57,9 +64,9 @@ export class Editor {
             column = this.numberOfColumnsForLine(line) - 1
         }
         for (var i=0;i<line;i++) {
-            newIndex = this.text.indexOf("\n", newIndex);
+            newIndex = this.text.indexOf("\n", newIndex) + 1;
         }
-        newIndex += column
+        newIndex += column;
         this.caretIndex = newIndex
     }
 
